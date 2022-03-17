@@ -9,6 +9,8 @@ from django.views.generic.edit import DeleteView
 from .models import Topic, Entry
 from .forms import EntryForm, TopicForm
 
+TOPIC_URL = 'learning_logs:topic'
+
 
 def index(request):
     return render(request, 'learning_logs/index.html')
@@ -62,7 +64,7 @@ def new_entry(request, topic_id):
             new_entry = form.save(commit=False)
             new_entry.topic = topic
             new_entry.save()
-            return redirect('learning_logs:topic', topic_id=topic_id)
+            return redirect(TOPIC_URL, topic_id=topic_id)
 
     context = {'topic': topic, 'form': form}
     return render(request, 'learning_logs/new_entry.html', context)
@@ -81,7 +83,7 @@ def edit_entry(request, entry_id):
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('learning_logs:topic', topic_id=topic.id)
+            return redirect(TOPIC_URL, topic_id=topic.id)
     context = {'entry':  entry, 'topic': topic, 'form': form}
     return render(request, 'learning_logs/edit_entry.html', context)
 
@@ -106,7 +108,7 @@ def delete_entry(request, entry_id):
 
     if request.method == 'POST':
         entry.delete()
-        return redirect('learning_logs:topic', topic_id=topic.id)
+        return redirect(TOPIC_URL, topic_id=topic.id)
 
     context = {'entry': entry}
     return render(request, 'learning_logs/delete_entry.html', context)
